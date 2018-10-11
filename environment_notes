@@ -1,0 +1,19 @@
+
+# Forecast environment variables
+tag = YYYYMMDD to get data for and run with.
+res = 0p25, 0p50, 1p00
+cyc = 00, 06, 12, 18 UTC cycle times
+
+# Directories
+BIN_DIR = directory with get_inv.pl, get_grib.pl, wgrib2, curl if not already in path
+RUN_DIR= directory to run in (makes as needed)
+MODEL_DIR = directory with model 
+
+Also need the parameter files in BIN_DIR
+
+# NWS Executables
+get_inv.pl  is at:
+get_grib.pl is at:
+wgrib2      is at:
+
+#curl 
