@@ -1,0 +1,15 @@
+$COMINgfs/gfs.${cycle}.pgrb2.1p00.f${fhr} pgrb2f${fhr}
+0p25
+0p50
+1p00
+
+
+SST:
+cp $COMINsst/sst2dvar_grb .
+
+from: pgrb2 files
+
+time 0 only: LAND:surface ICEC:surface
+
+each step: for field in ':TMP:2 m above' 'UGRD:10 m above' 'VGRD:10 m above'
+
