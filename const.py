@@ -2,6 +2,8 @@ import math
 #Robert Grumbine
 #1 June 2018
 
+#Class to hold constants, mostly geophysical, to support mapping, or for physical constants
+
 class const:
     rpdg           = math.pi / 180.
     dgpr           = 180. / math.pi

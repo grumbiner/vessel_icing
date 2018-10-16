@@ -1,3 +1,6 @@
+#working with ij points, i.e., indices to arrays
+#  warning: this are fortran-sense indices, i is most rapidly varying index
+
 def midpoint(x, y, z):
 #Robert Grumbine
 #1 June 2018

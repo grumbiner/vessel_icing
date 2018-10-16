@@ -2,6 +2,7 @@ import sys
 from struct import *
 import numpy as np
 
+#Includes only the mapping, not the data
 #Robert Grumbine
 #1 June 2018
 
@@ -9,6 +10,7 @@ import const
 from ijpt import *
 from latpt import *
 
+############### Friends to the class
 def ok(x, loc):
   return (loc.i >= 0 and loc.i < x.shape[0] and
           loc.j >= 0 and loc.j < x.shape[1] )
@@ -39,7 +41,7 @@ def to_2d(binary, nx, ny, k):
     count += 1
   return tmp
 
-#Includes only the mapping, not the data
+# Declaring a polar stereographic grid and a latitude-longitude grid
 #############################################################
 class psgrid:
 

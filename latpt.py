@@ -4,6 +4,10 @@ from const import *
 #Robert Grumbine
 #1 June 2018
 
+#Class for working with latitude - longitude points.
+#Future: use haversine formula for distance
+
+
 class latpt:
 
   def __init__(self,lat = 0, lon = 0):

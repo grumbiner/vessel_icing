@@ -3,6 +3,10 @@ import time
 
 import numpy as np
 
+# test/dummy program for looking at binaries
+# Robert Grumbine 
+# 11 October 2018
+
 fin = open('sst','rb')
 
 dt = np.dtype('f4')
