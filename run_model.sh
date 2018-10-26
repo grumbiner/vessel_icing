@@ -56,19 +56,25 @@ cd $RUN_DIR
 hr=000 
 #Get static fields:
    #sst
-   ${BIN_DIR}/get_inv.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/sst_parms | \
-  ${BIN_DIR}/get_grib.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}        sst.$res.$tag.f$hr.grib2
+  if [ ! -f sst.$res.$tag.f$hr.grib2 ] ; then
+     ${BIN_DIR}/get_inv.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/sst_parms | \
+    ${BIN_DIR}/get_grib.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}        sst.$res.$tag.f$hr.grib2
+  fi
 
    #land, ice
+  if [ ! -f landice.$res.$tag.f$hr.grib2 ] ; then
    ${BIN_DIR}/get_inv.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/landice_parms | \
   ${BIN_DIR}/get_grib.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}        landice.$res.$tag.f$hr.grib2
+  fi
 
 #240 hours is the limit of 3-hourly output from GFS
 while [ $hr -le 240 ]
 do
    # running inputs -- u10, v10, t2m
+  if [ ! -f running.$res.$tag.f$hr.$cyc.grib2 ] ; then
    ${BIN_DIR}/get_inv.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/running_parms | \
   ${BIN_DIR}/get_grib.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}        running.$res.$tag.f$hr.$cyc.grib2
+  fi
 
   hr=`expr $hr + 3`
   if [ $hr -le 10 ] ; then
@@ -84,8 +90,10 @@ done
 hr=000
 wgrib2 sst.$res.$tag.f$hr.grib2 | wgrib2 -i sst.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin sst
 wgrib2 landice.$res.$tag.f$hr.grib2 | wgrib2 -i landice.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin landice
-cat running.*.grib2 > all.grib2
-wgrib2 all.grib2 | wgrib2 -i all.grib2 -no_header -order we:ns -bin running_input
+if [ ! -f running_input ] ; then
+  cat running.*.grib2 > all.grib2
+  wgrib2 all.grib2 | wgrib2 -i all.grib2 -no_header -order we:ns -bin running_input
+fi
 
 ########## # Run the model ##################################################################
 cp $MODEL_DIR/*.py .

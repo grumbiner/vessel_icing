@@ -33,7 +33,7 @@ t2m  = np.zeros((nx, ny))
 speed  = np.zeros((nx, ny))
 icing_rate  = np.zeros((nx, ny))
 icing_plus = 0.0
-histogram = np.zeros((800))
+histogram = np.zeros(800)
 
 #read static sst, land, ice
 #general use:
@@ -67,7 +67,7 @@ nb=4*nx*ny
 frun = open('running_input','rb')
 binary = frun.read()
 
-for hour in range(0, 240, 3):
+for hour in range(0, 241, 3):
 
   tau = hour / 3
   #print "tau = ",tau, hour
@@ -109,7 +109,9 @@ for hour in range(0, 240, 3):
           sum += icing_rate[i,j] * mapper.cellarea(i,j)
           sumsq += icing_rate[i,j]*icing_rate[i,j] * mapper.cellarea(i,j)
           sumarea += mapper.cellarea(i,j)
-          histogram[irate] += mapper.cellarea(i,j)
+          histogram[int(irate)] += mapper.cellarea(i,j)
+  print "end of loops for hour = ",hour
+  
      
 
 print "average, rms nonzero = ",sum / sumarea, sqrt(sumsq/sumarea)
@@ -121,7 +123,7 @@ vheavy   = 0.0
 vvheavy  = 0.0
 extreme  = 0.0 # over 4.0 cm/hr (std.)
 
-for i in range (0,800):
+for i in range (0,len(histogram) ):
   rate = float(i) / 10.0
   if (rate < 0.7):
     light += histogram[i]
