@@ -54,7 +54,7 @@ flice.close()
 if (sst.max() > 150) :
    sst -= 273.15
 
-print ("sst, land, ice max ",sst.max(), land.max(), ice.max() )
+#print ("sst, land, ice max ",sst.max(), land.max(), ice.max() )
 
 ll = latpt()
 
@@ -67,7 +67,7 @@ frun = open('running_input','rb')
 binary = frun.read()
 
 for hour in range(0, 241, 3):
-  print("hour = ",hour)
+  #print("hour = ",hour)
   tau = int(hour / 3)
   t2m = to_2d(binary, nx, ny, 3*tau+0)
   u10 = to_2d(binary, nx, ny, 3*tau+1)
@@ -81,44 +81,46 @@ for hour in range(0, 241, 3):
       speed[i,j] = sqrt(u10[i,j]*u10[i,j]+v10[i,j]*v10[i,j])
 
   tf = -1.7
+
   for j in range (0,ny):
     for i in range (0,nx):
       if (land[i,j] > 0.5 or ice[i,j] > 0.5 or speed[i,j] > 50. or t2m[i,j] > 0 \
-       or t2m[i,j] < -40.0 or sst[i,j] < -1.7 or sst[i,j] > 12.0) :
+       or t2m[i,j] < -40.0 or sst[i,j] < tf or sst[i,j] > 12.0) :
         icing_rate[i,j] = 0.0
         icing_plus = 0.0
       else :
-        PR = speed[i,j]*(-1.7 - t2m[i,j])/(1.+.4*(sst[i,j] + 1.7))
+        PR = speed[i,j]*(tf - t2m[i,j])/(1.+.4*(sst[i,j] - tf))
         icing_rate[i,j] = PR*(icing_a + icing_b*PR + icing_c*PR*PR)
-        PRplus = (2.+speed[i,j])*(-1.7 - (t2m[i,j]-2.) )/(1.+.4*( max(tf, (sst[i,j]-0.5)) + 1.7))
+        PRplus = (2.+speed[i,j])*(tf - (t2m[i,j]-2.) )/(1.+.4*( max(tf, (sst[i,j]-0.5)) - tf))
         icing_plus = PRplus*(icing_a + icing_b*PRplus + icing_c*PRplus*PRplus)
         #dI_dP = icing_a + 2.*icing_b*PR + 3.*icing_c*PR*PR
         #dPdw = (1./speed[i,j])
         #dPdTa = -1./(tf-t2m[i,j])
         #dPdTo =  -0.4/(1+0.4*(sst[i,j] - tf)) 
 # cm/hr
-      #if (icing_rate[i,j] > 0 ) :
       if (icing_plus > 0 ) :
         mapper.locate(i, j, ll)
-        print ("grid ", hour, ll.lat, ll.lon, icing_rate[i,j], icing_plus)
+        #print ("grid ", "{:3d}".format(hour), "{:7.3f}".format(ll.lat), 
+        #          "{:7.3f}".format(ll.lon), "{:6.2f}".format(icing_rate[i,j]), 
+        #          "{:6.2f}".format(icing_plus) )
         irate = round(icing_rate[i,j]*10.0)
         if (irate >= 0):
           sum += icing_rate[i,j] * mapper.cellarea(i,j)
           sumsq += icing_rate[i,j]*icing_rate[i,j] * mapper.cellarea(i,j)
           sumarea += mapper.cellarea(i,j)
           histogram[int(irate)] += mapper.cellarea(i,j)
-  print ("end of loops for hour = ",hour)
+  #print ("end of loops for hour = ",hour)
   
      
 
-print ("average, rms nonzero = ",sum / sumarea, sqrt(sumsq/sumarea))
+print ("average, rms of nonzero = ",sum / sumarea, sqrt(sumsq/sumarea))
 histogram /= sumarea
 light    = 0.0 # to 0.7 cm/hr
 moderate = 0.0 # to 2.0 cm/hr
 heavy    = 0.0 # to 4.0 cm/hr
+extreme  = 0.0 # over 4.0 cm/hr (std.)
 vheavy   = 0.0
 vvheavy  = 0.0
-extreme  = 0.0 # over 4.0 cm/hr (std.)
 
 for i in range (0,len(histogram) ):
   rate = float(i) / 10.0

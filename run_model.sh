@@ -53,7 +53,7 @@ if [ ! -d $RUN_DIR ] ; then
 fi
 cd $RUN_DIR
     
-set -xe
+#set -xe
 
 hr=000 
 #Get static fields:
@@ -90,8 +90,13 @@ done
 
 ########## Generate binaries for model (once pygrib is working properly, this can be skipped)
 hr=000
-wgrib2 sst.$res.$tag.f$hr.grib2 | wgrib2 -i sst.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin sst
-wgrib2 landice.$res.$tag.f$hr.grib2 | wgrib2 -i landice.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin landice
+if [ ! -f sst ] ; then
+  wgrib2 sst.$res.$tag.f$hr.grib2 | wgrib2 -i sst.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin sst
+fi
+if [ ! -f landice ] ; then
+  wgrib2 landice.$res.$tag.f$hr.grib2 | wgrib2 -i landice.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin landice
+fi
+
 if [ ! -f running_input ] ; then
   cat running.*.grib2 > all.grib2
   wgrib2 all.grib2 | wgrib2 -i all.grib2 -no_header -order we:ns -bin running_input
