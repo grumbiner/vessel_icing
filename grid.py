@@ -18,12 +18,12 @@ def ok(x, loc):
 def binin(fin, nx, ny):
   binary = fin.read()
   fmt=fmt=str(nx*ny)+'f'
-  tmpx   = unpack(fmt, binary[0:0+4*nx*ny])
-  tmp = np.zeros((nx,ny))
+  tmpx = unpack(fmt, binary[0:0+4*nx*ny])
+  tmp  = np.zeros((nx,ny))
   count = 0
   for val2 in tmpx:
-    j = count / nx
-    i = count % nx
+    j = int(count / nx)
+    i = int(count % nx)
     tmp[i,j] = val2
     count += 1
   return tmp
@@ -31,12 +31,12 @@ def binin(fin, nx, ny):
 def to_2d(binary, nx, ny, k):
   nb = 4*nx*ny
   fmt=str(nx*ny)+'f'
-  tmpx   = unpack(fmt, binary[k*nb:(k+1)*nb])
-  tmp = np.zeros((nx,ny))
+  tmpx = unpack(fmt, binary[k*nb:(k+1)*nb])
+  tmp  = np.zeros((nx,ny))
   count = 0
   for val2 in tmpx:
-    j = count / nx
-    i = count % nx
+    j = int(count / nx)
+    i = int(count % nx)
     tmp[i,j] = val2
     count += 1
   return tmp
@@ -62,7 +62,6 @@ class llgrid:
     tlat = self.firstlat + j*self.dlat
     dy = abs(self.dlat) * 111.1
     dx = abs(self.dlon) * 111.1 * cos(math.pi *tlat / 180.0)
-    #print i,j,tlat,dx,dy, dx*dy
     return dx*dy
 
 #  def locate(self, i, j):

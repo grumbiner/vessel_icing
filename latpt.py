@@ -11,13 +11,11 @@ from const import *
 class latpt:
 
   def __init__(self,lat = 0, lon = 0):
-    #print "hello",lat,lon
     self.lat = lat
     self.lon = lon
-    #print "hello",self.lat,self.lon
 
   def show(self):
-    print self.lon,self.lat
+    print (self.lon,self.lat)
   
   def distance(self, x ):
 ### These are in the const.py
@@ -30,11 +28,8 @@ class latpt:
 
     arg = cos(ab)*cos(ac)+sin(ab)*sin(ac)*cos(bc)
     if (arg > 1):
-#      print "arg > 1, = ",arg
       arg = 1
     if (arg < -1):
-#      print "arg < -1, = ",arg
       arg = -1
 
-#    print arg
     return const.earth_radius * acos(arg)

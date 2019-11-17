@@ -1,5 +1,5 @@
 #!/bin/sh
-#set -x
+set -e
 
 #Get data and run vessel icing model
 #Robert Grumbine 11 October 2018
@@ -22,7 +22,8 @@ export res=${res:-0p25}
 #ftpprd is NWS operational (and shorter retention)
 #nomads is developmental, but longer retention
 #cfsv2 is the climate forecast system reanalysis, provinding information 1979-present
-source=http://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/gfs.${tag}${cyc}
+source=https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/gfs.${tag}/${cyc}
+
 #source=http://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.${tag}${cyc}
 #cfsv2 a:
 #cfsv2 b:
@@ -52,6 +53,7 @@ if [ ! -d $RUN_DIR ] ; then
 fi
 cd $RUN_DIR
     
+set -xe
 
 hr=000 
 #Get static fields:
@@ -97,4 +99,4 @@ fi
 
 ########## # Run the model ##################################################################
 cp $MODEL_DIR/*.py .
-time python icing.py > icing.out
+time python3 icing.py > icing.out

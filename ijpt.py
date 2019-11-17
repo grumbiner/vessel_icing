@@ -16,7 +16,7 @@ class ijpt:
     self.j = j
 
   def show(self):
-    print self.i,self.j
+    print (self.i,self.j)
 
   def im(self):
     x = ijpt()

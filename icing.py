@@ -19,9 +19,8 @@ loc = ijpt()
 
 #mapper  = global_nmc_nthdeg(1) 
 mapper  = global_nmc_nthdeg(4) 
-nx = mapper.nx
-ny = mapper.ny
-#print "nx, ny = ",nx, ny
+nx = int(mapper.nx)
+ny = int(mapper.ny)
 
 dt = np.dtype('f4')
 sst  = np.zeros((nx, ny))
@@ -55,7 +54,7 @@ flice.close()
 if (sst.max() > 150) :
    sst -= 273.15
 
-print "sst, land, ice max ",sst.max(), land.max(), ice.max()
+print ("sst, land, ice max ",sst.max(), land.max(), ice.max() )
 
 ll = latpt()
 
@@ -68,9 +67,8 @@ frun = open('running_input','rb')
 binary = frun.read()
 
 for hour in range(0, 241, 3):
-
-  tau = hour / 3
-  #print "tau = ",tau, hour
+  print("hour = ",hour)
+  tau = int(hour / 3)
   t2m = to_2d(binary, nx, ny, 3*tau+0)
   u10 = to_2d(binary, nx, ny, 3*tau+1)
   v10 = to_2d(binary, nx, ny, 3*tau+2)
@@ -102,19 +100,18 @@ for hour in range(0, 241, 3):
       #if (icing_rate[i,j] > 0 ) :
       if (icing_plus > 0 ) :
         mapper.locate(i, j, ll)
-        #print "grid ", hour, ll.lat, ll.lon, icing_rate[i,j],dI_dP*PR*dPdw, dI_dP*PR*dPdTa, dI_dP*PR*dPdTo
-        print "grid ", hour, ll.lat, ll.lon, icing_rate[i,j], icing_plus
+        print ("grid ", hour, ll.lat, ll.lon, icing_rate[i,j], icing_plus)
         irate = round(icing_rate[i,j]*10.0)
         if (irate >= 0):
           sum += icing_rate[i,j] * mapper.cellarea(i,j)
           sumsq += icing_rate[i,j]*icing_rate[i,j] * mapper.cellarea(i,j)
           sumarea += mapper.cellarea(i,j)
           histogram[int(irate)] += mapper.cellarea(i,j)
-  print "end of loops for hour = ",hour
+  print ("end of loops for hour = ",hour)
   
      
 
-print "average, rms nonzero = ",sum / sumarea, sqrt(sumsq/sumarea)
+print ("average, rms nonzero = ",sum / sumarea, sqrt(sumsq/sumarea))
 histogram /= sumarea
 light    = 0.0 # to 0.7 cm/hr
 moderate = 0.0 # to 2.0 cm/hr
@@ -139,11 +136,11 @@ for i in range (0,len(histogram) ):
     extreme += histogram[i]
 
   if (histogram[i] > 0):
-    print "hist", i/10.0, histogram[i]
+    print ("hist", i/10.0, histogram[i])
 
-print "low-heavy ",light, moderate, heavy,light+moderate+heavy
-print "vh-extreme ", vheavy, vvheavy, extreme
-print "all ",light + moderate + heavy + vheavy + vvheavy + extreme
+print ("low-heavy ",light, moderate, heavy,light+moderate+heavy)
+print ("vh-extreme ", vheavy, vvheavy, extreme)
+print ("all ",light + moderate + heavy + vheavy + vvheavy + extreme)
 
 #convert_to_c(t2m)
 #cm/hr to in/hr, m/s 

@@ -21,15 +21,15 @@ x -= 273.15
 start=time.time()
 for j in range (0,ny):
   for i in range (0,nx):
-    print "alpha ",i,j, x[j,i]
+    print ("alpha ",i,j, x[j,i])
 end=time.time()
-print "j,i ",end - start
+print ("j,i ",end - start)
 
 start = time.time()
 for i in range (0,nx):
   for j in range (0,ny):
-    print "beta ",i,j, x[j,i]
+    print ("beta ",i,j, x[j,i])
 end = time.time()
-print "i,j ",end - start
+print ("i,j ",end - start)
 
 
