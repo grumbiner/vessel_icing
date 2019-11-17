@@ -33,7 +33,7 @@ def to_2d(binary, nx, ny, k):
   fmt=str(nx*ny)+'f'
   tmpx = unpack(fmt, binary[k*nb:(k+1)*nb])
   tmp  = np.zeros((nx,ny))
-  count = 0
+  count = int(0)
   for val2 in tmpx:
     j = int(count / nx)
     i = int(count % nx)
@@ -60,9 +60,9 @@ class llgrid:
 
   def cellarea(self, i, j):
     tlat = self.firstlat + j*self.dlat
-    dy = abs(self.dlat) * 111.1
-    dx = abs(self.dlon) * 111.1 * cos(math.pi *tlat / 180.0)
-    return dx*dy
+    dy = (self.dlat) * 111.1
+    dx = (self.dlon) * 111.1 * cos(math.pi *tlat / 180.0)
+    return abs(dx*dy)
 
 #  def locate(self, i, j):
 #    z = latpt()
