@@ -1,5 +1,4 @@
 import sys
-
 import math
 import numpy as np
 from struct import *
@@ -13,6 +12,8 @@ from grid  import *
 icing_a = 2.73E-02
 icing_b = 2.91E-04
 icing_c = 1.84E-06
+#freezing point of sea water in algorithm
+tf = -1.7
 
 #working variables:
 #mapper  = global_nmc_nthdeg(1) 
@@ -22,6 +23,7 @@ ny = int(mapper.ny)
 
 sst  = np.zeros((nx, ny))
 land = np.zeros((nx, ny))
+mask = np.zeros((nx, ny))
 ice  = np.zeros((nx, ny))
 u10  = np.zeros((nx, ny))
 v10  = np.zeros((nx, ny))
@@ -29,34 +31,27 @@ t2m  = np.zeros((nx, ny))
 speed  = np.zeros((nx, ny))
 icing_rate  = np.zeros((nx, ny))
 
-icing_plus = 0.0
-histogram = np.zeros(800)
-
 #read static sst, land, ice
-#general use:
-fmt=str(nx*ny)+'f'
-
 fin = open('sst','rb')
 binary = fin.read()
 sst = to_2d(binary, nx, ny, 0)
 fin.close()
-
+#convert to C if needed
+if (sst.max() > 150) :
+   sst -= 273.15
 
 flice = open('landice','rb')
 binary = flice.read()
 land = to_2d(binary, nx, ny, 0)
 ice  = to_2d(binary, nx, ny, 1)
 flice.close()
+for j in range (0,ny):
+  for i in range (0,nx):
+    if (land[i,j] > 0.5 or ice[i,j] > 0.5 or sst[i,j] < tf or sst[i,j] > 12.0) :
+      mask[i,j] = 1.0
 
-#convert to C if needed
-if (sst.max() > 150) :
-   sst -= 273.15
-#print ("sst, land, ice max ",sst.max(), land.max(), ice.max() )
-
-#freezing point of sea water in algorithm
-tf = -1.7
-
-dtime = int(3)
+icing_plus = 0.0
+histogram = np.zeros(800)
 
 sum = 0.0
 sumsq = 0.0
@@ -66,27 +61,25 @@ frun = open('running_input','rb')
 binary = frun.read()
 
 #exit()
-for hour in range(0, 241, dtime):
-  print("hour = ",hour)
+dtime = int(3)
+for hour in range(0, 80*dtime + 1, dtime):
+  print("hour = ",hour, flush = True)
   tau = int(hour / dtime)
   t2m = to_2d(binary, nx, ny, 3*tau+0)
   u10 = to_2d(binary, nx, ny, 3*tau+1)
-  v10 = to_2d(binary, nx, ny, 3*tau+2)
+  v10 = to_2d(binary, nx, ny, 3*tau+2) 
   v10 *= v10
   u10 *= u10
   speed = (u10+v10)
 
 # transform units, derive quantities:
-  if (t2m.max() > 70):
+  if (t2m.max() > 150):
     t2m -= 273.15
 
 # main loop:
   for j in range (0,ny):
     for i in range (0,nx):
-      #speed[i,j] = sqrt(speed[i,j])
-      #if (land[i,j] > 0.5 or ice[i,j] > 0.5 or speed[i,j] > 50. or t2m[i,j] > 0 
-      if (land[i,j] > 0.5 or ice[i,j] > 0.5 or t2m[i,j] > 0 
-          or t2m[i,j] < -40.0 or sst[i,j] < tf or sst[i,j] > 12.0) :
+      if (mask[i,j] == 1.0 or t2m[i,j] > 0 or t2m[i,j] < -40.0 ) :
         icing_rate[i,j] = 0.0
         icing_plus = 0.0
       else :
@@ -145,7 +138,3 @@ for i in range (0,len(histogram) ):
 print ("low-heavy ",light, moderate, heavy,light+moderate+heavy)
 print ("vh-extreme ", vheavy, vvheavy, extreme)
 print ("all ",light + moderate + heavy + vheavy + vvheavy + extreme)
-
-#convert_to_c(t2m)
-#cm/hr to in/hr, m/s 
-#sys.exit()

@@ -41,6 +41,14 @@ def to_2d(binary, nx, ny, k):
     count += 1
   return tmp
 
+#beta is much, much faster:
+def to2d_beta(tmp, binary, nx, ny, k):
+  nb = 4*nx*ny
+  fmt = str(nx*ny)+'f'
+  tmpx = unpack(fmt, binary[k*nb:(k+1)*nb])
+  tmp  = np.asarray(tmpx)
+  return
+
 # Declaring a polar stereographic grid and a latitude-longitude grid
 #############################################################
 class psgrid:
@@ -48,7 +56,6 @@ class psgrid:
   def locate(self, i, j, z):
     z.lat = i
     z.lon = j
-
 
 class llgrid:
 
@@ -84,7 +91,6 @@ class global_5min(llgrid):
     self.nx = nx
     self.ny = ny
 
-    
 class global_halfdeg(llgrid):
 
   def __init__(self, nx = 720, ny = 360):
@@ -105,7 +111,6 @@ class global_nthdeg(llgrid):
     self.nx = 360*int(n)
     self.ny = 180*int(n)
 
-    
 class global_nmc_nthdeg(llgrid):
 
   def __init__(self, n = 1):
@@ -116,4 +121,3 @@ class global_nmc_nthdeg(llgrid):
     self.nx = 360*int(n)
     self.ny = 180*int(n)+1
 
-    

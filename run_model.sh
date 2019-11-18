@@ -104,4 +104,4 @@ fi
 
 ########## # Run the model ##################################################################
 cp $MODEL_DIR/*.py .
-time python3 icing.py > icing.out
+time python3 -m cProfile -o prof.stat icing.py > icing.out
