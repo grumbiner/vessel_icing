@@ -51,7 +51,7 @@ for j in range (0,ny):
       mask[i,j] = 1.0
 
 icing_plus = 0.0
-histogram = np.zeros(800)
+histogram = np.zeros(1000)
 
 sum = 0.0
 sumsq = 0.0

@@ -91,17 +91,30 @@ done
 ########## Generate binaries for model (once pygrib is working properly, this can be skipped)
 hr=000
 if [ ! -f sst ] ; then
-  wgrib2 sst.$res.$tag.f$hr.grib2 | wgrib2 -i sst.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin sst
+  ${BIN_DIR}/wgrib2 sst.$res.$tag.f$hr.grib2 | ${BIN_DIR}/wgrib2 -i sst.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin sst
 fi
 if [ ! -f landice ] ; then
-  wgrib2 landice.$res.$tag.f$hr.grib2 | wgrib2 -i landice.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin landice
+  ${BIN_DIR}/wgrib2 landice.$res.$tag.f$hr.grib2 | ${BIN_DIR}/wgrib2 -i landice.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin landice
 fi
 
 if [ ! -f running_input ] ; then
   cat running.*.grib2 > all.grib2
-  wgrib2 all.grib2 | wgrib2 -i all.grib2 -no_header -order we:ns -bin running_input
+  ${BIN_DIR}/wgrib2 all.grib2 | ${BIN_DIR}/wgrib2 -i all.grib2 -no_header -order we:ns -bin running_input
+  #Preliminary cleanup 
+  rm running.*.grib2
 fi
 
-########## # Run the model ##################################################################
+########## # Run the model ################################################################
 cp $MODEL_DIR/*.py .
 time python3 -m cProfile -o prof.stat icing.py > icing.out
+
+
+########## # Make some output #############################################################
+grep hist icing.out > hist
+cp $MODEL_DIR/gnuin .
+gnuplot < gnuin
+mv hist.png ~/grumbinescience.org/
+
+########## # Make some output #############################################################
+#Final cleanup
+rm all.grib2 running_input

@@ -1,0 +1,4 @@
+set term png
+set out "hist.png"
+set grid
+plot "hist" using 2:3 with lp  
