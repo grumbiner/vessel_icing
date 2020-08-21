@@ -106,14 +106,19 @@ fi
 
 ########## # Run the model ################################################################
 cp $MODEL_DIR/*.py .
-time python3 -m cProfile -o prof.stat icing.py > icing.out
+#time python3 -m cProfile -o prof.stat icing.py > icing.out
+#python3 statview.py > stats.out
+
+time python3 icing.py > icing.out
 
 
-########## # Make some output #############################################################
-grep hist icing.out > hist
-cp $MODEL_DIR/gnuin .
-gnuplot < gnuin
-mv hist.png ~/grumbinescience.org/
+######### # Make some output #############################################################
+# -- now in python, via matplotlib
+
+#grep hist icing.out > hist
+#cp $MODEL_DIR/gnuin .
+#gnuplot < gnuin
+mv *.png ~/grumbinescience.org/icing/
 
 ########## # Make some output #############################################################
 #Final cleanup
