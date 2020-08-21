@@ -42,12 +42,13 @@ def to_2d(binary, nx, ny, k):
   return tmp
 
 #beta is much, much faster:
-def to2d_beta(tmp, binary, nx, ny, k):
+def to2d_beta(binary, nx, ny, k):
   nb = 4*nx*ny
   fmt = str(nx*ny)+'f'
   tmpx = unpack(fmt, binary[k*nb:(k+1)*nb])
   tmp  = np.asarray(tmpx)
-  return
+  tmp.shape = (nx, ny)
+  return tmp
 
 # Declaring a polar stereographic grid and a latitude-longitude grid
 #############################################################
