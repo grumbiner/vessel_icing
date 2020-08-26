@@ -6,7 +6,7 @@ import numpy as np
 #Robert Grumbine
 #1 June 2018
 
-import const
+from const import *
 from ijpt import *
 from latpt import *
 
@@ -60,25 +60,23 @@ class psgrid:
 
 class llgrid:
 
-  def locate(self, i, j, z):
+  def locate(self, j, i, z):
     z.lat = self.firstlat + j*self.dlat
     z.lon = self.firstlon + i*self.dlon
     while (z.lon > 360.):
       z.lon -= 360.
 
-  def cellarea(self, i, j):
-    tlat = self.firstlat + j*self.dlat
-    dy = (self.dlat) * 111.1
-    dx = (self.dlon) * 111.1 * cos(math.pi *tlat / 180.0)
-    return abs(dx*dy)
+  def cellarea(self, j, i):
+    #Original:
+    #tlat = self.firstlat + j*self.dlat
+    #dy = (self.dlat) * 111.1
+    #dx = (self.dlon) * 111.1 * cos(tlat*const.rpdg )
+    #return abs(dx*dy)
+    #Promote/pre-compute grid constants (darea_base) and 
+    #    pre-translate degrees to radians in the base class (*lat_rad)
+    #da = cos(self.firstlat_rad + j*self.dlat_rad)
+    return (self.darea_base * cos(self.firstlat_rad + j*self.dlat_rad) ) 
 
-#  def locate(self, i, j):
-#    z = latpt()
-#    z.lat = self.firstlat + j*self.dlat
-#    z.lon = self.firstlon + i*self.dlon
-#    while (z.lon > 360.):
-#      z.lon -= 360.
-#    return z
 
 #############################################################
 
@@ -121,4 +119,7 @@ class global_nmc_nthdeg(llgrid):
     self.firstlon = self.dlon / 2.
     self.nx = 360*int(n)
     self.ny = 180*int(n)+1
+    self.darea_base   = abs(self.dlat*self.dlon)*const.degree_area
+    self.dlat_rad     = self.dlat * const.rpdg
+    self.firstlat_rad = self.firstlat * const.rpdg
 

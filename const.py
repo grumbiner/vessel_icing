@@ -8,9 +8,14 @@ class const:
     rpdg           = math.pi / 180.
     dgpr           = 180. / math.pi
 
+
     earth_radius   = 6371.2   # km -- sphere
     earth_spheroid = 6378.137 # km -- oblate spheroid (WGS84)
     eccen2         = 0.00669438
+
+    degree_length  = earth_radius * 2. * math.pi / 360.
+    degree_area    = degree_length * degree_length
+
 #Computed parameters
     eccen        = math.sqrt(eccen2)
     ps_chi1  = ( eccen2/2. + 5.*eccen2*eccen2/24. + eccen2*eccen2*eccen2/12.);
