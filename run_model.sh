@@ -46,7 +46,7 @@ RUN_DIR=${RUN_DIR:-running}
 if [ ! -d $RUN_DIR ] ; then
   mkdir -p $RUN_DIR
   err=$?
-  if [ err -ne 0 ] ; then
+  if [ $err -ne 0 ] ; then
     echo Making rundir failed with error $err exiting now
     exit
   fi

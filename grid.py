@@ -59,6 +59,24 @@ class psgrid:
     z.lon = j
 
 class llgrid:
+  #dlat = float(-1.)
+  #dlon = float(1.)
+  #firstlat = 90. + dlat/2.
+  #firstlon = dlon / 2. 
+  #nx = int(360./abs(dlon))
+  #ny = int(180./abs(dlat))
+
+  def __init__(self, dlat, dlon, firstlat, firstlon, nx, ny):
+    print("hello frmo llgrid.__init__")
+    self.dlat         = dlat
+    self.dlon         = dlon
+    self.firstlat     = firstlat
+    self.firstlon     = firstlon
+    self.nx           = nx
+    self.ny           = ny
+    self.darea_base   = abs(self.dlat*self.dlon)*const.degree_area
+    self.dlat_rad     = self.dlat * const.rpdg
+    self.firstlat_rad = self.firstlat * const.rpdg
 
   def locate(self, j, i, z):
     z.lat = self.firstlat + j*self.dlat
@@ -74,7 +92,6 @@ class llgrid:
     #return abs(dx*dy)
     #Promote/pre-compute grid constants (darea_base) and 
     #    pre-translate degrees to radians in the base class (*lat_rad)
-    #da = cos(self.firstlat_rad + j*self.dlat_rad)
     return (self.darea_base * cos(self.firstlat_rad + j*self.dlat_rad) ) 
 
 
@@ -82,44 +99,23 @@ class llgrid:
 
 class global_5min(llgrid):
 
-  def __init__(self, nx = 12*360, ny = 12*180):
-    self.dlat = -1./12.
-    self.dlon =  1./12.
-    self.firstlat = 90 + self.dlat/2. 
-    self.firstlon = self.dlon / 2.
-    self.nx = nx
-    self.ny = ny
+  def __init__(self):
+    llgrid.__init__(self, -1./12., 1/12., 90 - 1./24., 1./24., 12*360, 12*180) 
 
 class global_halfdeg(llgrid):
 
   def __init__(self, nx = 720, ny = 360):
-    self.dlat = -0.5
-    self.dlon =  0.5
-    self.firstlat = 90 + self.dlat/2. 
-    self.firstlon = self.dlon / 2.
-    self.nx = nx
-    self.ny = ny
+    llgrid.__init__(self, -0.5, 0.5, 90 - 0.25, 0.25, 720, 360)
 
 class global_nthdeg(llgrid):
 
   def __init__(self, n = 1.0):
-    self.dlat = -1./float(n)
-    self.dlon =  1./float(n)
-    self.firstlat = 90.0 + self.dlat/2.
-    self.firstlon = self.dlon / 2.
-    self.nx = 360*int(n)
-    self.ny = 180*int(n)
+    fn = float(n)
+    llgrid.__init__(self, -1./fn, 1./fn, 90.,  1./2./fn, n*360, n*180) 
 
 class global_nmc_nthdeg(llgrid):
 
   def __init__(self, n = 1):
-    self.dlat = -1./float(n)
-    self.dlon =  1./float(n)
-    self.firstlat = 90.0
-    self.firstlon = self.dlon / 2.
-    self.nx = 360*int(n)
-    self.ny = 180*int(n)+1
-    self.darea_base   = abs(self.dlat*self.dlon)*const.degree_area
-    self.dlat_rad     = self.dlat * const.rpdg
-    self.firstlat_rad = self.firstlat * const.rpdg
+    fn = float(n)
+    llgrid.__init__(self, -1./fn, 1./fn, 90.,  1./2./fn, n*360, n*180+1) 
 
