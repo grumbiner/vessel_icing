@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+#set -e
 
 #Get data and run vessel icing model
 #Robert Grumbine 11 October 2018
@@ -53,7 +53,7 @@ if [ ! -d $RUN_DIR ] ; then
   cd $RUN_DIR
  else
   cd $RUN_DIR
-  rm *.grib2
+  #rm *.grib2
 fi
     
 #set -xe
