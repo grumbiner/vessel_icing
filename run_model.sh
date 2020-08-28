@@ -53,7 +53,7 @@ if [ ! -d $RUN_DIR ] ; then
   cd $RUN_DIR
  else
   cd $RUN_DIR
-  #rm *.grib2
+  rm *.grib2
 fi
     
 #set -xe
@@ -105,7 +105,7 @@ if [ ! -f running_input ] ; then
   cat running.*.grib2 > all.grib2
   ${BIN_DIR}/wgrib2 all.grib2 | ${BIN_DIR}/wgrib2 -i all.grib2 -no_header -order we:ns -bin running_input
   #Preliminary cleanup 
-  #rm running.*.grib2
+  rm running.*.grib2
 fi
 
 ########## # Run the model ################################################################
@@ -125,4 +125,4 @@ mv *.png ~/grumbinescience.org/icing/
 
 ########## # Make some output #############################################################
 #Final cleanup
-#rm all.grib2 running_input
+rm all.grib2 running_input landice sst

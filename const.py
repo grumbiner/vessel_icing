@@ -23,7 +23,6 @@ class const:
     ps_chi3  = ( 7.*eccen2*eccen2*eccen2/120. );
     ps_ll    = math.pow( math.pow(1.+eccen,1.+eccen) * math.pow(1.-eccen,1.-eccen) , 1./2.);
 
-#from 
 ##ifdef WGS84
 #  const double parameters::rearth  = 6378.137e3;
 #  const double parameters::eccen2 = 0.00669438;
