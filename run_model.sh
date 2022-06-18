@@ -1,5 +1,5 @@
 #!/bin/sh
-#set -e
+set -xe
 
 #Get data and run vessel icing model
 #Robert Grumbine 11 October 2018
@@ -22,7 +22,7 @@ export res=${res:-0p25}
 #ftpprd is NWS operational (and shorter retention)
 #nomads is developmental, but longer retention
 #cfsv2 is the climate forecast system reanalysis, provinding information 1979-present
-source=https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/gfs.${tag}/${cyc}
+source=https://ftpprd.ncep.noaa.gov/data/nccf/com/gfs/prod/gfs.${tag}/${cyc}/atmos/
 
 #source=http://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.${tag}${cyc}
 #cfsv2 a:
@@ -57,7 +57,7 @@ if [ ! -d $RUN_DIR ] ; then
 fi
     
 #set -xe
-set +x
+#set +x
 
 hr=000 
 #Get static fields:
@@ -73,6 +73,8 @@ hr=000
    ${BIN_DIR}/get_grib.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}     landice.$res.$tag.f$hr.grib2 2> /dev/null
   fi
 
+#hourly to 120 hours (20220618)
+#3-hourly to 384 (20220618)
 #240 hours is the limit of 3-hourly output from GFS
 while [ $hr -le 240 ]
 do
@@ -121,8 +123,12 @@ python3 statview.py > stats.out
 #grep hist icing.out > hist
 #cp $MODEL_DIR/gnuin .
 #gnuplot < gnuin
-mv *.png ~/grumbinescience.org/icing/
+if [ $LOGNAME = "rmg3" ] ; then
+  mv *.png ~/website/grumbinescience.org/icing/
+else
+  mv *.png ~/grumbinescience.org/icing/
+fi
 
 ########## # Make some output #############################################################
 #Final cleanup
-rm all.grib2 running_input landice sst
+#rm all.grib2 running_input landice sst

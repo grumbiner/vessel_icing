@@ -126,12 +126,13 @@ for hour in range(0, 80*dtime + 1, dtime):
         #          "{:7.3f}".format(ll.lon), "{:6.2f}".format(icing_rate[j,i]), 
         #          "{:6.2f}".format(icing_plus) )
 
-        irate = round(icing_rate[j,i]*10.0)
-        if (irate >= 0):
-          sum     += icing_rate[j,i] * mapper.cellarea(j,i)
-          sumsq   += icing_rate[j,i] * icing_rate[j,i] * mapper.cellarea(j,i)
-          sumarea += mapper.cellarea(j,i)
-          histogram[int(irate)] += mapper.cellarea(j,i)
+        if (icing_rate[j,i] >= 0):
+          irate = round(icing_rate[j,i]*10.0)
+          da    = mapper.cellarea(j)
+          sum     += icing_rate[j,i] * da
+          sumsq   += icing_rate[j,i] * icing_rate[j,i] * da
+          sumarea += da
+          histogram[int(irate)] += da
 
 #From pcolormesh sample ------------------------------------------
   levels = (0,0.01,0.7,2.0, 4.0, 7.5, 13.5, len(histogram)/10.)
@@ -145,10 +146,10 @@ for hour in range(0, 80*dtime + 1, dtime):
 
   y1 = int(int(ny*3)/4)
   y2 = int(ny-(int(10/abs(dy))))
-  im = ax0.pcolormesh(lons, lats[y1:y2], icing_rate[y1:y2,:], cmap=cmap, norm=norm, alpha = 99.0)
+  im = ax0.pcolormesh(lons, lats[y1:y2], icing_rate[y1:y2,:], cmap=cmap, norm=norm, alpha = .990)
   fig.colorbar(im, ax=ax0)
 
-  #plt.show()
+  #for interactive: plt.show()
   plt.savefig("b"+"{:03d}".format(hour) +".png")
   plt.close()
 

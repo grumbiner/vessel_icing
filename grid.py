@@ -43,8 +43,8 @@ def to_2d(binary, nx, ny, k):
 
 #beta is much, much faster:
 def to2d_beta(binary, nx, ny, k):
-  nb = 4*nx*ny
-  fmt = str(nx*ny)+'f'
+  nb   = 4*nx*ny
+  fmt  = str(nx*ny)+'f'
   tmpx = unpack(fmt, binary[k*nb:(k+1)*nb])
   tmp  = np.asarray(tmpx)
   tmp.shape = (nx, ny)
@@ -67,7 +67,7 @@ class llgrid:
   #ny = int(180./abs(dlat))
 
   def __init__(self, dlat, dlon, firstlat, firstlon, nx, ny):
-    print("hello frmo llgrid.__init__")
+    print("hello from llgrid.__init__")
     self.dlat         = dlat
     self.dlon         = dlon
     self.firstlat     = firstlat
@@ -84,7 +84,7 @@ class llgrid:
     while (z.lon > 360.):
       z.lon -= 360.
 
-  def cellarea(self, j, i):
+  def cellarea(self, j):
     #Original:
     #tlat = self.firstlat + j*self.dlat
     #dy = (self.dlat) * 111.1
