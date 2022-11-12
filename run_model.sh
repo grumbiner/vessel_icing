@@ -10,6 +10,7 @@ set -xe
 #    3:30 to download the approx 177 Mb of grib2 data (at home)
 #    7:30 to run the python code.
 
+export PYTHONPATH=/Volumes/APPS/bbob/mmablib/py
 
 export tag=${tag:-`date +"%Y%m%d"`}
 export cyc=${cyc:-00}
@@ -63,13 +64,13 @@ hr=000
 #Get static fields:
    #sst
   if [ ! -f sst.$res.$tag.f$hr.grib2 ] ; then
-     ${BIN_DIR}/get_inv.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/sst_parms | \
+     ${BIN_DIR}/get_inv.pl  $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/sst_parms | \
      ${BIN_DIR}/get_grib.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}   sst.$res.$tag.f$hr.grib2 2> /dev/null
   fi
 
-   #land, ice
+  #land, ice
   if [ ! -f landice.$res.$tag.f$hr.grib2 ] ; then
-   ${BIN_DIR}/get_inv.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/landice_parms | \
+   ${BIN_DIR}/get_inv.pl  $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/landice_parms | \
    ${BIN_DIR}/get_grib.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}     landice.$res.$tag.f$hr.grib2 2> /dev/null
   fi
 
@@ -80,7 +81,7 @@ while [ $hr -le 240 ]
 do
    # running inputs -- u10, v10, t2m
   if [ ! -f running.$res.$tag.f$hr.$cyc.grib2 ] ; then
-   ${BIN_DIR}/get_inv.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/running_parms | \
+   ${BIN_DIR}/get_inv.pl  $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}.idx | grep -f ${BIN_DIR}/running_parms | \
    ${BIN_DIR}/get_grib.pl $source/gfs.t${cyc}z.pgrb2.${res}.f${hr}     running.$res.$tag.f$hr.$cyc.grib2 2> /dev/null
   fi
 
@@ -95,30 +96,30 @@ do
 done
 
 ########## Generate binaries for model (once pygrib is working properly, this can be skipped)
-hr=000
-if [ ! -f sst ] ; then
-  ${BIN_DIR}/wgrib2 sst.$res.$tag.f$hr.grib2 | ${BIN_DIR}/wgrib2 -i sst.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin sst
-fi
-if [ ! -f landice ] ; then
-  ${BIN_DIR}/wgrib2 landice.$res.$tag.f$hr.grib2 | ${BIN_DIR}/wgrib2 -i landice.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin landice
-fi
-
-if [ ! -f running_input ] ; then
-  cat running.*.grib2 > all.grib2
-  ${BIN_DIR}/wgrib2 all.grib2 | ${BIN_DIR}/wgrib2 -i all.grib2 -no_header -order we:ns -bin running_input
-  #Preliminary cleanup 
-  rm running.*.grib2
-fi
-
+#hr=000
+#if [ ! -f sst ] ; then
+#  ${BIN_DIR}/wgrib2 sst.$res.$tag.f$hr.grib2 | ${BIN_DIR}/wgrib2 -i sst.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin sst
+#fi
+#if [ ! -f landice ] ; then
+#  ${BIN_DIR}/wgrib2 landice.$res.$tag.f$hr.grib2 | ${BIN_DIR}/wgrib2 -i landice.$res.$tag.f$hr.grib2 -no_header -order we:ns -bin landice
+#fi
+#
+#if [ ! -f running_input ] ; then
+#  cat running.*.grib2 > all.grib2
+#  ${BIN_DIR}/wgrib2 all.grib2 | ${BIN_DIR}/wgrib2 -i all.grib2 -no_header -order we:ns -bin running_input
+#  #Preliminary cleanup 
+#  rm running.*.grib2
+#fi
+#
 ########## # Run the model ################################################################
-cp $MODEL_DIR/*.py .
+#cp $MODEL_DIR/*.py .
 
-#time python3 icing.py > icing.out
-time python3 -m cProfile -o prof.stat icing.py > icing.out
+#time python3 new2.py > new2.out
+time python3 -m cProfile -o prof.stat new2.py > new2.out
 python3 statview.py > stats.out
 
 ######### # Make some output #############################################################
-# -- now in python, via matplotlib
+# -- now in python, via matplotlib and cartopy
 
 #grep hist icing.out > hist
 #cp $MODEL_DIR/gnuin .
@@ -129,6 +130,6 @@ else
   mv *.png ~/grumbinescience.org/icing/
 fi
 
-########## # Make some output #############################################################
+########## ########## #############################################################
 #Final cleanup
 #rm all.grib2 running_input landice sst

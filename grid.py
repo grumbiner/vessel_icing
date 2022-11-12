@@ -67,7 +67,7 @@ class llgrid:
   #ny = int(180./abs(dlat))
 
   def __init__(self, dlat, dlon, firstlat, firstlon, nx, ny):
-    print("hello from llgrid.__init__")
+    #debug print("hello from llgrid.__init__", flush=True)
     self.dlat         = dlat
     self.dlon         = dlon
     self.firstlat     = firstlat
