@@ -4,5 +4,5 @@ import pstats
 
 p = pstats.Stats('prof.stat')
 
-p.sort_stats('time').print_stats(35)
+p.sort_stats('time').print_stats(55)
 #p.sort_stats('call').print_stats(15)
