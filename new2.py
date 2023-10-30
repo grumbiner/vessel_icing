@@ -14,9 +14,6 @@ from matplotlib.colors import BoundaryNorm
 from matplotlib.colors import ListedColormap
 from matplotlib.ticker import MaxNLocator
 
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-
 #pythonpath = mmablib/py
 from struct import *
 from const import *
@@ -43,7 +40,7 @@ ny = int(mapper.ny)
 #read static sst, land, ice
 #RG: args:
 res="0p25"
-tag="20221111"
+tag=sys.argv[1]
 
 #RG: Could also manage grib gets from urllib3 
 
@@ -123,6 +120,9 @@ icing_plus = 0.0
 
 dtime = int(3)
 #-------------------------------------------------------------------
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+
 for hour in range(0, 80*dtime + 1, dtime):
 #for hour in range(0, 8*dtime + 1, dtime):
   hr = "{:03d}".format(hour)

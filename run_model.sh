@@ -10,7 +10,7 @@ set -xe
 #    3:30 to download the approx 177 Mb of grib2 data (at home)
 #    7:30 to run the python code.
 
-export PYTHONPATH=/Volumes/APPS/bbob/mmablib/py
+export PYTHONPATH=$HOME/ncep/mmablib/py
 
 export tag=${tag:-`date +"%Y%m%d"`}
 export cyc=${cyc:-00}
@@ -112,10 +112,10 @@ done
 #fi
 #
 ########## # Run the model ################################################################
-#cp $MODEL_DIR/*.py .
+cp $MODEL_DIR/*.py .
 
 #time python3 new2.py > new2.out
-time python3 -m cProfile -o prof.stat new2.py > new2.out
+time python3 -m cProfile -o prof.stat new2.py $tag > new2.out
 python3 statview.py > stats.out
 
 ######### # Make some output #############################################################
